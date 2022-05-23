@@ -85,7 +85,6 @@ class GCN(nn.Module):
         self.adj_norm = None
         self.features = None
         self.activate_value = []
-        # self.initialize()
     def initialize(self):
         self.gc1.reset_parameters()
         self.gc2.reset_parameters()
@@ -106,18 +105,13 @@ class GCN(nn.Module):
             self.activate_value.append(x)
             x = F.relu(x)
             self.inner_features = x
-            # x.retain_grad()
         else:
             x = self.gc1(x, adj)
-            # x.retain_grad()
             self.activate_value.append(x)
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
-        # x.retain_grad()
         self.output = x
         self.activate_value.append(x)
-        # return F.log_softmax(x, dim=1)
-        # return F.softmax(x, dim=1)
         return x
 
     def test(self, x, adj, id, labels, select_node=False):
